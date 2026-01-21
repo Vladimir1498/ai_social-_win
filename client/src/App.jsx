@@ -14,7 +14,11 @@ function App() {
   const [selectedStyle, setSelectedStyle] = useState('');
 
   useEffect(() => {
-    init();
+    try {
+      init();
+    } catch (error) {
+      console.warn('TWA SDK init failed:', error);
+    }
     fetchBalance();
   }, []);
 
