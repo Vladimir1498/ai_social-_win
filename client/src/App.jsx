@@ -27,9 +27,7 @@ function App() {
 
   const fetchBalance = async () => {
     try {
-      const response = await axios.get('/api/user/balance', {
-        headers: { 'x-init-data': initData }
-      });
+      const response = await axios.get('/api/user/balance');
       setBalance(response.data.balance);
     } catch (error) {
       console.error(error);
@@ -44,7 +42,7 @@ function App() {
 
     try {
       const response = await axios.post('/api/ai/analyze', formData, {
-        headers: { 'x-init-data': initData, 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
       setResponses(response.data.responses);
       fetchBalance();
