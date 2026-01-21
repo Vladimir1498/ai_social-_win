@@ -22,8 +22,12 @@ router.post("/create-invoice", async (req, res) => {
   }
 });
 
-// Webhook for payment success (need to set up webhook in BotFather)
+// Webhook for payment success
 router.post("/webhook", async (req, res) => {
+  if (req.headers["x-telegram-bot-api-secret-token"] !== process.env.TELEGRAM_SECRET) {
+    return res.status(401).send("Unauthorized");
+  }
+
   const { telegram_payment_charge_id, provider_payment_charge_id, total_amount, invoice_payload } = req.body;
 
   if (invoice_payload === "10_generations") {
