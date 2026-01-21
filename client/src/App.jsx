@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { init, initData } from '@twa-dev/sdk';
 import axios from 'axios';
 import FileUpload from './components/FileUpload';
 import StyleSelector from './components/StyleSelector';
@@ -17,13 +16,11 @@ function App() {
   const [selectedStyle, setSelectedStyle] = useState('');
 
   useEffect(() => {
-    try {
-      init();
+    if (window.Telegram && window.Telegram.WebApp) {
+      const initData = window.Telegram.WebApp.initData;
       if (initData) {
         axios.defaults.headers.common['x-init-data'] = initData;
       }
-    } catch (error) {
-      console.warn('TWA SDK init failed:', error);
     }
     fetchBalance();
   }, []);
