@@ -33,13 +33,22 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
     const prompt = `Ты эксперт в дейтинге. Проанализируй скриншот переписки и предложи 3 варианта ответа в стиле ${style} на русском языке.`;
 
     let result;
-    try {
-      result = await model.generateContent([prompt, imagePart]);
-    } catch (error) {
-      if (error.status === 429) {
-        return res.status(429).json({ error: "AI перегружен, попробуй через минуту" });
+    const maxRetries = 3;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        result = await model.generateContent([prompt, imagePart]);
+        break; // Success, exit loop
+      } catch (error) {
+        if (error.status === 429 && attempt < maxRetries) {
+          console.log(`Attempt ${attempt} failed with 429, retrying in ${attempt * 2} seconds...`);
+          await new Promise((resolve) => setTimeout(resolve, attempt * 2000)); // Exponential backoff
+        } else {
+          if (error.status === 429) {
+            return res.status(429).json({ error: "AI перегружен, попробуй через минуту" });
+          }
+          throw error;
+        }
       }
-      throw error;
     }
     const response = await result.response;
     const text = response.text();
