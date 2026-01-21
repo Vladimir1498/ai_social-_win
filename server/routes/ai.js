@@ -29,10 +29,18 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
       },
     };
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     const prompt = `Ты эксперт в дейтинге. Проанализируй скриншот переписки и предложи 3 варианта ответа в стиле ${style} на русском языке.`;
 
-    const result = await model.generateContent([prompt, imagePart]);
+    let result;
+    try {
+      result = await model.generateContent([prompt, imagePart]);
+    } catch (error) {
+      if (error.status === 429) {
+        return res.status(429).json({ error: "AI перегружен, попробуй через минуту" });
+      }
+      throw error;
+    }
     const response = await result.response;
     const text = response.text();
 
