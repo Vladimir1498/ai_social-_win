@@ -12,6 +12,7 @@ router.get("/balance", async (req, res) => {
         username: req.user.username,
         firstName: req.user.first_name,
         lastName: req.user.last_name,
+        balance: 3, // Free credits for new users
       });
       await user.save();
     }
