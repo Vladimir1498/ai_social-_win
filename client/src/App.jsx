@@ -19,6 +19,9 @@ function App() {
   useEffect(() => {
     try {
       init();
+      if (initData) {
+        axios.defaults.headers.common['x-init-data'] = initData;
+      }
     } catch (error) {
       console.warn('TWA SDK init failed:', error);
     }
