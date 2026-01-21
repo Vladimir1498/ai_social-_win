@@ -6,6 +6,9 @@ import StyleSelector from './components/StyleSelector';
 import BalanceDisplay from './components/BalanceDisplay';
 import ResponseDisplay from './components/ResponseDisplay';
 
+// Set axios base URL to backend
+axios.defaults.baseURL = 'https://ai-social-win.onrender.com';
+
 function App() {
   const [balance, setBalance] = useState(0);
   const [responses, setResponses] = useState([]);
