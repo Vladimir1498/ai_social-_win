@@ -19,18 +19,13 @@ function validateInitData(initData, botToken) {
 }
 
 module.exports = (req, res, next) => {
-  console.log("Headers:", req.headers);
   const initData = req.headers["x-init-data"];
-  console.log("initData:", initData);
   if (!initData) {
-    console.log("No initData provided");
     return res.status(401).json({ error: "No initData provided" });
   }
 
   const botToken = process.env.BOT_TOKEN;
-  console.log("BOT_TOKEN:", botToken ? "present" : "missing");
   if (!validateInitData(initData, botToken)) {
-    console.log("Invalid initData");
     return res.status(401).json({ error: "Invalid initData" });
   }
 
@@ -38,7 +33,6 @@ module.exports = (req, res, next) => {
   const urlParams = new URLSearchParams(initData);
   const user = JSON.parse(urlParams.get("user"));
   req.user = user;
-  console.log("User validated:", user.id);
 
   next();
 };
