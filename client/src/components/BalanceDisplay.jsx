@@ -1,10 +1,18 @@
 function BalanceDisplay({ balance, onPurchase }) {
   return (
-    <div className="mb-4 flex justify-between items-center">
-      <p className="text-lg">Баланс: {balance} генераций</p>
-      <button onClick={onPurchase} className="bg-yellow-500 text-white px-4 py-2 rounded">
-        Купить 10 за 50 ⭐
-      </button>
+    <div className="bg-gray-50 rounded-2xl p-4 shadow-sm">
+      <div className="flex justify-between items-center">
+        <div>
+          <p className="text-sm text-gray-600">Баланс</p>
+          <p className="text-2xl font-semibold text-gray-900">{balance} генераций</p>
+        </div>
+        <button
+          onClick={onPurchase}
+          className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+        >
+          Купить 10 за 50 ⭐
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,15 +1,25 @@
 function StyleSelector({ onStyleSelect }) {
-  const styles = ['Смешной', 'Романтичный', 'Дерзкий'];
+  const styles = [
+    { name: 'Смешной', emoji: '😄' },
+    { name: 'Романтичный', emoji: '💕' },
+    { name: 'Дерзкий', emoji: '😏' }
+  ];
 
   return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700">Выберите стиль ответа</label>
-      <select onChange={(e) => onStyleSelect(e.target.value)} className="mt-1 block w-full border-gray-300 rounded-md">
-        <option value="">Выберите стиль</option>
+    <div className="mb-6">
+      <label className="block text-lg font-medium text-gray-900 mb-3">Выберите стиль ответа</label>
+      <div className="grid grid-cols-1 gap-3">
         {styles.map(style => (
-          <option key={style} value={style}>{style}</option>
+          <button
+            key={style.name}
+            onClick={() => onStyleSelect(style.name)}
+            className="flex items-center justify-center p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
+          >
+            <span className="text-2xl mr-3">{style.emoji}</span>
+            <span className="text-lg font-medium text-gray-900">{style.name}</span>
+          </button>
         ))}
-      </select>
+      </div>
     </div>
   );
 }

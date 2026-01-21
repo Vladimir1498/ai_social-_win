@@ -72,19 +72,23 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold text-center mb-4">AI Social Wingman</h1>
-      <BalanceDisplay balance={balance} onPurchase={handlePurchase} />
-      <FileUpload onFileSelect={setSelectedFile} />
-      <StyleSelector onStyleSelect={setSelectedStyle} />
-      <button
-        onClick={handleAnalyze}
-        disabled={!selectedFile || !selectedStyle || loading}
-        className="w-full bg-blue-500 text-white py-2 rounded mt-4"
-      >
-        {loading ? 'Анализ...' : 'Проанализировать'}
-      </button>
-      <ResponseDisplay responses={responses} />
+    <div className="min-h-screen bg-white p-6 font-sans">
+      <div className="max-w-md mx-auto">
+        <h1 className="text-3xl font-light text-center mb-8 text-gray-900">AI Social Wingman</h1>
+        <div className="space-y-6">
+          <BalanceDisplay balance={balance} onPurchase={handlePurchase} />
+          <FileUpload onFileSelect={setSelectedFile} />
+          <StyleSelector onStyleSelect={setSelectedStyle} />
+          <button
+            onClick={handleAnalyze}
+            disabled={!selectedFile || !selectedStyle || loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white py-3 px-4 rounded-xl mt-6 font-medium transition-colors duration-200 shadow-sm"
+          >
+            {loading ? 'Анализ...' : 'Проанализировать'}
+          </button>
+          <ResponseDisplay responses={responses} />
+        </div>
+      </div>
     </div>
   );
 }
