@@ -15,6 +15,9 @@ router.get("/balance", async (req, res) => {
         balance: 3, // Free credits for new users
       });
       await user.save();
+    } else if (user.balance < 3) {
+      user.balance = 3; // Reset to free credits if depleted
+      await user.save();
     }
     res.json({ balance: user.balance });
   } catch (error) {
