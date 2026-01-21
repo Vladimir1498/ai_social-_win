@@ -29,7 +29,7 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
       },
     };
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
     const prompt = `Ты эксперт в дейтинге. Проанализируй скриншот переписки и предложи 3 варианта ответа в стиле ${style} на русском языке.`;
 
     const result = await model.generateContent([prompt, imagePart]);
