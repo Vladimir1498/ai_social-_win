@@ -65,12 +65,10 @@ function App() {
         payload: '10_generations',
         currency: 'XTR',
         prices: [{ label: '10 генераций', amount: 50 }]
-      }, {
-        headers: { 'x-init-data': initData }
       });
       window.open(response.data.invoiceLink, '_blank');
     } catch (error) {
-      console.error(error);
+      alert('Ошибка при создании платежа: ' + (error.response?.data?.error || error.message));
     }
   };
 
