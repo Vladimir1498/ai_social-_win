@@ -109,4 +109,73 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
   }
 });
 
+router.post("/analyze-full", upload.single("image"), async (req, res) => {
+  try {
+    const { style, gender } = req.body;
+    const user = await User.findOne({ telegramId: req.user.id });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.balance <= 0 && !["572741546", "932090137"].includes(String(req.user.id))) {
+      return res.status(403).json({ error: "Insufficient balance" });
+    }
+
+    if (!["572741546", "932090137"].includes(String(req.user.id))) {
+      // Admins don't consume credits for analysis
+      user.balance -= 1;
+    }
+
+    const imageBase64 = req.file.buffer.toString("base64");
+    const prompt = `Проанализируй скриншот переписки и верни JSON с анализом: {"interest_score": число от 1 до 10, "green_flags": массив плюсов, "red_flags": массив рисков, "analysis": текст разбора}.`;
+
+    let result;
+    const maxRetries = 3;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        result = await groq.chat.completions.create({
+          model: "meta-llama/llama-4-scout-17b-16e-instruct",
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: prompt },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: `data:${req.file.mimetype};base64,${imageBase64}`,
+                  },
+                },
+              ],
+            },
+          ],
+        });
+        break;
+      } catch (error) {
+        if (error.status === 429 && attempt < maxRetries) {
+          console.log(`Attempt ${attempt} failed with 429, retrying in ${attempt * 2} seconds...`);
+          await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+        } else {
+          if (error.status === 429) {
+            return res.status(429).json({ error: "AI перегружен, попробуй через минуту" });
+          }
+          throw error;
+        }
+      }
+    }
+    const text = result.choices[0].message.content;
+    // Parse JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const analysisData = JSON.parse(jsonMatch[0]);
+      res.json(analysisData);
+    } else {
+      res.json({ interest_score: 5, green_flags: [], red_flags: [], analysis: "Не удалось проанализировать" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
