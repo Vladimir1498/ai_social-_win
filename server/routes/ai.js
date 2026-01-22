@@ -76,7 +76,10 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
     });
     await newResponse.save();
 
-    user.balance -= 1;
+    if (req.user.id !== "572741546") {
+      // Admin doesn't consume credits
+      user.balance -= 1;
+    }
     user.history.push(newResponse._id);
     await user.save();
 
