@@ -1,13 +1,15 @@
 const express = require("express");
 const multer = require("multer");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require("groq-sdk");
 const User = require("../models/User");
 const Response = require("../models/Response");
 const router = express.Router();
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 router.post("/analyze", upload.single("image"), async (req, res) => {
   try {
@@ -22,21 +24,30 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
       return res.status(403).json({ error: "Insufficient balance" });
     }
 
-    const imagePart = {
-      inlineData: {
-        data: req.file.buffer.toString("base64"),
-        mimeType: req.file.mimetype,
-      },
-    };
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const imageBase64 = req.file.buffer.toString("base64");
     const prompt = `Ты эксперт в дейтинге. Проанализируй скриншот переписки и предложи 3 варианта ответа в стиле ${style} на русском языке.`;
 
     let result;
     const maxRetries = 3;
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        result = await model.generateContent([prompt, imagePart]);
+        result = await groq.chat.completions.create({
+          model: "llama-3.2-11b-vision-instruct",
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: prompt },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: `data:${req.file.mimetype};base64,${imageBase64}`,
+                  },
+                },
+              ],
+            },
+          ],
+        });
         break; // Success, exit loop
       } catch (error) {
         if (error.status === 429 && attempt < maxRetries) {
@@ -50,8 +61,7 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
         }
       }
     }
-    const response = await result.response;
-    const text = response.text();
+    const text = result.choices[0].message.content;
 
     const responses = text
       .split("\n")
