@@ -17,6 +17,7 @@ function Rehearsal() {
       setSessions(response.data);
     } catch (error) {
       console.error(error);
+      alert('Ошибка загрузки сессий: ' + (error.response?.data?.error || error.message));
     }
   };
 
