@@ -20,7 +20,7 @@ jobs:
         working-directory: ./client
       - run: echo '/* /index.html 200' > dist/_redirects
         working-directory: ./client
-      - run: mkdir -p docs && cp -r client/dist/* docs/
-      - run: git config --global user.name 'github-actions[bot]' && git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-      - run: git add docs/ && git commit -m "Deploy to docs" || echo "No changes to commit"
-      - run: git push
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./client/dist
