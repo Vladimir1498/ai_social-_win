@@ -61,7 +61,19 @@ function App() {
         currency: 'XTR',
         prices: [{ label: '10 генераций', amount: 50 }]
       });
-      window.open(response.data.invoiceLink, '_blank');
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.openInvoice(response.data.invoiceLink, (status) => {
+          if (status === 'paid') {
+            fetchBalance();
+          } else if (status === 'cancelled') {
+            alert('Платеж отменен');
+          } else if (status === 'failed') {
+            alert('Платеж не удался');
+          }
+        });
+      } else {
+        window.open(response.data.invoiceLink, '_blank');
+      }
     } catch (error) {
       alert('Ошибка при создании платежа: ' + (error.response?.data?.error || error.message));
     }
