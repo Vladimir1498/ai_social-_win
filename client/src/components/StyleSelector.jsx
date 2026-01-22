@@ -9,7 +9,8 @@ function StyleSelector({ onStyleSelect }) {
     { name: 'Ироничный', emoji: '🙃' },
     { name: 'Прямолинейный', emoji: '💪' },
     { name: 'Легкомысленный', emoji: '🌈' },
-    { name: 'Сарказм и абсурд', emoji: '🤪' }
+    { name: 'Сарказм и абсурд', emoji: '🤪' },
+    { name: 'Дерзкий с матом', emoji: '🔥' }
   ];
 
   return (
