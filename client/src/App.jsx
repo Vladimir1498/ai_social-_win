@@ -110,7 +110,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white font-sans pb-20">
-      <Routes key={location.pathname}>
+      <Routes>
         <Route path="/" element={
           <div className="p-6">
             <div className="max-w-md mx-auto">
