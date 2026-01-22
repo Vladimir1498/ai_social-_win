@@ -2,6 +2,7 @@ const express = require("express");
 const Groq = require("groq-sdk");
 const Session = require("../models/Session");
 const User = require("../models/User");
+const Response = require("../models/Response");
 const router = express.Router();
 
 const groq = new Groq({
