@@ -18,6 +18,8 @@ jobs:
         working-directory: ./client
       - run: npm run build
         working-directory: ./client
+      - run: echo '/* /index.html 200' > dist/_redirects
+        working-directory: ./client
       - run: mkdir -p docs && cp -r client/dist/* docs/
       - run: git config --global user.name 'github-actions[bot]' && git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       - run: git add docs/ && git commit -m "Deploy to docs" || echo "No changes to commit"

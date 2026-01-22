@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import FileUpload from './components/FileUpload';
 import StyleSelector from './components/StyleSelector';
@@ -184,7 +184,7 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/ai_social-_win">
       <AppContent />
     </Router>
   );
