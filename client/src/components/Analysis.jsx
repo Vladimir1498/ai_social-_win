@@ -107,6 +107,10 @@ function Analysis({ data, isPremium: initialPremium }) {
 
          <button
            onClick={async () => {
+             if (!data.screenshot_text) {
+               alert('Текст скриншота не найден. Попробуйте перезагрузить анализ.');
+               return;
+             }
              try {
                await axios.post('/api/session/create', { screenshotText: data.screenshot_text });
                navigate('/rehearsal');
