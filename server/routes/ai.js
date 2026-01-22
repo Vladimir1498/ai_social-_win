@@ -166,12 +166,25 @@ router.post("/analyze-full", upload.single("image"), async (req, res) => {
     }
     const text = result.choices[0].message.content;
     // Parse JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      const analysisData = JSON.parse(jsonMatch[0]);
+    let analysisData = null;
+    try {
+      // Try to parse the entire response as JSON first
+      analysisData = JSON.parse(text.trim());
+    } catch (e) {
+      // If not, find JSON object
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          analysisData = JSON.parse(jsonMatch[0]);
+        } catch (e2) {
+          console.error("JSON parse error:", e2.message);
+        }
+      }
+    }
+    if (analysisData && typeof analysisData === "object" && analysisData.interest_score !== undefined) {
       res.json(analysisData);
     } else {
-      res.json({ interest_score: 5, green_flags: [], red_flags: [], analysis: "Не удалось проанализировать" });
+      res.json({ interest_score: 5, green_flags: [], red_flags: [], analysis: "Не удалось проанализировать", screenshot_text: "" });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
