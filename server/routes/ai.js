@@ -128,7 +128,7 @@ router.post("/analyze-full", upload.single("image"), async (req, res) => {
     }
 
     const imageBase64 = req.file.buffer.toString("base64");
-    const prompt = `Проанализируй скриншот переписки и верни JSON с анализом: {"interest_score": число от 1 до 10, "green_flags": массив плюсов, "red_flags": массив рисков, "analysis": текст разбора}.`;
+    const prompt = `Проанализируй скриншот переписки и верни JSON с анализом: {"interest_score": число от 1 до 10, "green_flags": массив плюсов, "red_flags": массив рисков, "analysis": текст разбора, "screenshot_text": полный текст переписки из скриншота}.`;
 
     let result;
     const maxRetries = 3;

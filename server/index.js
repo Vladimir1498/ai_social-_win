@@ -3,7 +3,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const axios = require("axios");
+const cron = require("node-cron");
 const validateInitData = require("./middleware/validateInitData");
+const Response = require("./models/Response");
+const User = require("./models/User");
 
 const app = express();
 app.use(cors());
@@ -14,9 +17,31 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
+// Cron job for "Анти-Тормоз" notifications
+cron.schedule("*/15 * * * *", async () => {
+  try {
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+    const oldResponses = await Response.find({ is_copied: false, last_interaction: { $lt: twoHoursAgo } });
+
+    for (const response of oldResponses) {
+      const user = await User.findById(response.userId);
+      if (user && user.telegramId) {
+        await axios.post(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`, {
+          chat_id: user.telegramId,
+          text: "Напоминание: У вас есть неиспользованный анализ скриншота. Попробуйте репетицию!",
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Cron job error:", error);
+  }
+});
+
 app.use("/api/user", validateInitData, require("./routes/user"));
 app.use("/api/ai", validateInitData, require("./routes/ai"));
 app.use("/api/payment", validateInitData, require("./routes/payment"));
+app.use("/api/session", validateInitData, require("./routes/session"));
+app.use("/api/response", validateInitData, require("./routes/response"));
 
 // Bot webhook for commands and payments
 app.post("/bot/webhook", async (req, res) => {
