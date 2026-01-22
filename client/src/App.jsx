@@ -6,7 +6,7 @@ import BalanceDisplay from './components/BalanceDisplay';
 import ResponseDisplay from './components/ResponseDisplay';
 
 // Set axios base URL to backend
-axios.defaults.baseURL = 'https://ai-social-win.onrender.com';
+axios.defaults.baseURL = 'https://ai-social-win.onrender.com'; // v1.0
 
 function App() {
   const [balance, setBalance] = useState(0);
@@ -14,6 +14,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -39,6 +40,7 @@ function App() {
     const formData = new FormData();
     formData.append('image', selectedFile);
     formData.append('style', selectedStyle);
+    formData.append('gender', selectedGender);
 
     try {
       const response = await axios.post('/api/ai/analyze', formData, {
@@ -87,9 +89,30 @@ function App() {
           <BalanceDisplay balance={balance} onPurchase={handlePurchase} />
           <FileUpload onFileSelect={setSelectedFile} />
           <StyleSelector onStyleSelect={setSelectedStyle} />
+          <div className="mb-6">
+            <label className="block text-lg font-medium text-gray-900 mb-3">Пол собеседника</label>
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setSelectedGender('М')}
+                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all duration-200 ${
+                  selectedGender === 'М' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Мужской 👨
+              </button>
+              <button
+                onClick={() => setSelectedGender('Ж')}
+                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all duration-200 ${
+                  selectedGender === 'Ж' ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Женский 👩
+              </button>
+            </div>
+          </div>
           <button
             onClick={handleAnalyze}
-            disabled={!selectedFile || !selectedStyle || loading}
+            disabled={!selectedFile || !selectedStyle || !selectedGender || loading}
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white py-3 px-4 rounded-xl mt-6 font-medium transition-colors duration-200 shadow-sm"
           >
             {loading ? 'Анализ...' : 'Проанализировать'}
