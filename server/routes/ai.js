@@ -183,6 +183,10 @@ router.post("/analyze-full", upload.single("image"), async (req, res) => {
     }
     let responseData;
     if (analysisData && typeof analysisData === "object" && analysisData.interest_score !== undefined) {
+      // Ensure screenshot_text is a string
+      if (Array.isArray(analysisData.screenshot_text)) {
+        analysisData.screenshot_text = analysisData.screenshot_text.join("\n");
+      }
       responseData = analysisData;
     } else {
       responseData = { interest_score: 5, green_flags: [], red_flags: [], analysis: "Не удалось проанализировать", screenshot_text: "" };
