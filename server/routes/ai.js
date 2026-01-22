@@ -32,7 +32,7 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         result = await groq.chat.completions.create({
-          model: "llama-3.2-11b-vision-instruct",
+          model: "llama-3.2-11b-vision-preview",
           messages: [
             {
               role: "user",
