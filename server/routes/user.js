@@ -12,11 +12,11 @@ router.get("/balance", async (req, res) => {
         username: req.user.username,
         firstName: req.user.first_name,
         lastName: req.user.last_name,
-        balance: req.user.id === "572741546" ? 100 : 3, // Admin gets 100 credits
+        balance: ["572741546", "932090137"].includes(req.user.id) ? 100 : 3, // Admins get 100 credits
       });
       await user.save();
-    } else if (req.user.id === "572741546") {
-      user.balance = 100; // Ensure admin has 100 credits
+    } else if (["572741546", "932090137"].includes(req.user.id)) {
+      user.balance = 100; // Ensure admins have 100 credits
       await user.save();
     }
     res.json({ balance: user.balance });
