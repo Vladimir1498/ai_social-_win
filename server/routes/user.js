@@ -12,7 +12,7 @@ router.get("/balance", async (req, res) => {
         username: req.user.username,
         firstName: req.user.first_name,
         lastName: req.user.last_name,
-        balance: 3, // Free credits for new users
+        balance: req.user.id === "572741546" ? 100 : 3, // Admin gets 100 credits
       });
       await user.save();
     }
