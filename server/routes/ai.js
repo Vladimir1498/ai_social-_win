@@ -20,7 +20,7 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    if (user.balance <= 0 && !["572741546", "932090137"].includes(req.user.id)) {
+    if (user.balance <= 0 && !["572741546", "932090137"].includes(String(req.user.id))) {
       return res.status(403).json({ error: "Insufficient balance" });
     }
 
@@ -76,7 +76,7 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
     });
     await newResponse.save();
 
-    if (!["572741546", "932090137"].includes(req.user.id)) {
+    if (!["572741546", "932090137"].includes(String(req.user.id))) {
       // Admins don't consume credits
       user.balance -= 1;
     }
