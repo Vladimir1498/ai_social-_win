@@ -17,10 +17,12 @@ router.get("/balance", async (req, res) => {
       });
       await user.save();
     } else if (["572741546", "932090137"].includes(req.user.id)) {
+      console.log("Setting admin balance to 100");
       user.balance = 100; // Ensure admins have 100 credits
       await user.save();
+      console.log("Saved admin balance:", user.balance);
     }
-    console.log("Balance:", user.balance);
+    console.log("Final Balance:", user.balance);
     res.json({ balance: user.balance });
   } catch (error) {
     res.status(500).json({ error: error.message });
