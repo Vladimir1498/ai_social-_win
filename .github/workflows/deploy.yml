@@ -18,7 +18,9 @@ jobs:
         working-directory: ./client
       - run: npm run build
         working-directory: ./client
-      - run: echo '/* /index.html 200' > dist/_redirects
+      - run: touch dist/.nojekyll
+        working-directory: ./client
+      - run: cp dist/index.html dist/404.html
         working-directory: ./client
       - uses: peaceiris/actions-gh-pages@v3
         with:
