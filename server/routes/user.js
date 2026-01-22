@@ -15,6 +15,9 @@ router.get("/balance", async (req, res) => {
         balance: req.user.id === "572741546" ? 100 : 3, // Admin gets 100 credits
       });
       await user.save();
+    } else if (req.user.id === "572741546") {
+      user.balance = 100; // Ensure admin has 100 credits
+      await user.save();
     }
     res.json({ balance: user.balance });
   } catch (error) {
