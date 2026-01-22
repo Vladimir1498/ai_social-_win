@@ -112,7 +112,8 @@ function Analysis({ data, isPremium: initialPremium }) {
                return;
              }
              try {
-               await axios.post('/api/session/create', { screenshotText: data.screenshot_text });
+               const screenshotText = Array.isArray(data.screenshot_text) ? data.screenshot_text.join('\n') : data.screenshot_text;
+               await axios.post('/api/session/create', { screenshotText });
                navigate('/rehearsal');
              } catch (error) {
                console.error(error);

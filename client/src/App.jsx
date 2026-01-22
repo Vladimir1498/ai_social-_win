@@ -35,6 +35,7 @@ function AppContent() {
     }
     fetchBalance();
     fetchPremium();
+    fetchLatestAnalysis();
   }, []);
 
   const fetchBalance = async () => {
@@ -50,6 +51,17 @@ function AppContent() {
     try {
       const response = await axios.get('/api/user/premium');
       setIsPremium(response.data.isPremium);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchLatestAnalysis = async () => {
+    try {
+      const response = await axios.get('/api/response/latest-analysis');
+      if (response.data) {
+        setAnalysisData(response.data);
+      }
     } catch (error) {
       console.error(error);
     }

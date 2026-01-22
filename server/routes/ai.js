@@ -181,11 +181,19 @@ router.post("/analyze-full", upload.single("image"), async (req, res) => {
         }
       }
     }
+    let responseData;
     if (analysisData && typeof analysisData === "object" && analysisData.interest_score !== undefined) {
-      res.json(analysisData);
+      responseData = analysisData;
     } else {
-      res.json({ interest_score: 5, green_flags: [], red_flags: [], analysis: "Не удалось проанализировать", screenshot_text: "" });
+      responseData = { interest_score: 5, green_flags: [], red_flags: [], analysis: "Не удалось проанализировать", screenshot_text: "" };
     }
+    // Save to latest Response
+    const latestResponse = await Response.findOne({ userId: user._id }).sort({ createdAt: -1 });
+    if (latestResponse) {
+      latestResponse.analysis = responseData;
+      await latestResponse.save();
+    }
+    res.json(responseData);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
