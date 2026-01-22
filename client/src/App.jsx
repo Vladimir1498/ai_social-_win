@@ -27,6 +27,10 @@ function AppContent() {
       const initData = window.Telegram.WebApp.initData;
       if (initData) {
         axios.defaults.headers.common['x-init-data'] = initData;
+        // Clear hash if it contains initData to avoid routing issues
+        if (window.location.hash.includes('tgWebAppData')) {
+          window.history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
       }
     }
     fetchBalance();
