@@ -2,7 +2,14 @@ function StyleSelector({ onStyleSelect }) {
   const styles = [
     { name: 'Смешной', emoji: '😄' },
     { name: 'Романтичный', emoji: '💕' },
-    { name: 'Дерзкий', emoji: '😏' }
+    { name: 'Дерзкий', emoji: '😏' },
+    { name: 'Милый', emoji: '🥰' },
+    { name: 'Саркастичный', emoji: '😜' },
+    { name: 'Загадочный', emoji: '🕵️' },
+    { name: 'Ироничный', emoji: '🙃' },
+    { name: 'Прямолинейный', emoji: '💪' },
+    { name: 'Легкомысленный', emoji: '🌈' },
+    { name: 'Как в анекдотах', emoji: '😂' }
   ];
 
   return (
