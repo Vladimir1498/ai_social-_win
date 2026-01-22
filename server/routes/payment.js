@@ -22,24 +22,6 @@ router.post("/create-invoice", async (req, res) => {
   }
 });
 
-// Webhook for payment success
-router.post("/webhook", async (req, res) => {
-  if (req.headers["x-telegram-bot-api-secret-token"] !== process.env.TELEGRAM_SECRET) {
-    return res.status(401).send("Unauthorized");
-  }
-
-  const { telegram_payment_charge_id, provider_payment_charge_id, total_amount, invoice_payload } = req.body;
-
-  if (invoice_payload === "10_generations") {
-    const userId = req.body.user.id; // assuming user data in webhook
-    const user = await User.findOne({ telegramId: userId });
-    if (user) {
-      user.balance += 10;
-      await user.save();
-    }
-  }
-
-  res.sendStatus(200);
-});
+// Payment routes (webhook moved to index.js)
 
 module.exports = router;
