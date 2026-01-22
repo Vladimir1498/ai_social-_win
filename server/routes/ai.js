@@ -25,7 +25,7 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
     }
 
     const imageBase64 = req.file.buffer.toString("base64");
-    const prompt = `Ты эксперт в дейтинге. Проанализируй скриншот переписки и предложи 3 варианта ответа в стиле ${style} на русском языке.`;
+    const prompt = `Ты эксперт в дейтинге. Посмотри на скриншот переписки и предложи ровно 3 коротких варианта ответа в стиле ${style} на русском языке. Каждый вариант на отдельной строке, без нумерации и лишнего текста.`;
 
     let result;
     const maxRetries = 3;
