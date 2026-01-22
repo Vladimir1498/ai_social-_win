@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import FileUpload from './components/FileUpload';
 import StyleSelector from './components/StyleSelector';
@@ -19,6 +19,7 @@ function AppContent() {
   const [selectedStyle, setSelectedStyle] = useState('');
   const [selectedGender, setSelectedGender] = useState('');
   const [analysisData, setAnalysisData] = useState(null);
+  const [isPremium, setIsPremium] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -29,12 +30,22 @@ function AppContent() {
       }
     }
     fetchBalance();
+    fetchPremium();
   }, []);
 
   const fetchBalance = async () => {
     try {
       const response = await axios.get('/api/user/balance');
       setBalance(response.data.balance);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchPremium = async () => {
+    try {
+      const response = await axios.get('/api/user/premium');
+      setIsPremium(response.data.isPremium);
     } catch (error) {
       console.error(error);
     }
@@ -95,7 +106,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white font-sans pb-20">
-      <Routes>
+      <Routes key={location.pathname}>
         <Route path="/" element={
           <div className="p-6">
             <div className="max-w-md mx-auto">
@@ -142,7 +153,7 @@ function AppContent() {
             </div>
           </div>
         } />
-        <Route path="/analysis" element={<Analysis data={analysisData} />} />
+        <Route path="/analysis" element={<Analysis data={analysisData} isPremium={isPremium} />} />
         <Route path="/rehearsal" element={<Rehearsal />} />
       </Routes>
 

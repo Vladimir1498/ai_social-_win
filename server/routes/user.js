@@ -25,4 +25,14 @@ router.get("/balance", async (req, res) => {
   }
 });
 
+// Get user premium status
+router.get("/premium", async (req, res) => {
+  try {
+    const isPremium = ["572741546", "932090137"].includes(String(req.user.id));
+    res.json({ isPremium });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

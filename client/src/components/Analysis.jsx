@@ -2,9 +2,36 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function Analysis({ data }) {
-  const [isPremium, setIsPremium] = useState(false); // Mock premium status
+function Analysis({ data, isPremium: initialPremium }) {
+  const [isPremium, setIsPremium] = useState(initialPremium);
   const navigate = useNavigate();
+
+  const handleUnlock = async () => {
+    try {
+      const response = await axios.post('/api/payment/create-invoice', {
+        title: 'Разблокировка анализа',
+        description: 'Разблокировать полный анализ за 50 звезд',
+        payload: 'unlock_analysis',
+        currency: 'XTR',
+        prices: [{ label: 'Разблокировка анализа', amount: 50 }]
+      });
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.openInvoice(response.data.invoiceLink, (status) => {
+          if (status === 'paid') {
+            setIsPremium(true);
+          } else if (status === 'cancelled') {
+            alert('Платеж отменен');
+          } else if (status === 'failed') {
+            alert('Платеж не удался');
+          }
+        });
+      } else {
+        window.open(response.data.invoiceLink, '_blank');
+      }
+    } catch (error) {
+      alert('Ошибка при создании платежа: ' + (error.response?.data?.error || error.message));
+    }
+  };
 
   if (!data) {
     return (
@@ -67,7 +94,7 @@ function Analysis({ data }) {
 
         {!isPremium && (
           <div className="text-center mb-6">
-            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-xl font-medium">
+            <button onClick={handleUnlock} className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-xl font-medium">
               Разблокировать за 50 ⭐
             </button>
           </div>
