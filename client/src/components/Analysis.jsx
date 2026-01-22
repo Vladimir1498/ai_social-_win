@@ -112,6 +112,7 @@ function Analysis({ data, isPremium: initialPremium }) {
                navigate('/rehearsal');
              } catch (error) {
                console.error(error);
+               alert('Ошибка создания сессии: ' + (error.response?.data?.error || error.message));
              }
            }}
            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-xl text-center font-medium transition-colors duration-200 shadow-sm mt-6"
