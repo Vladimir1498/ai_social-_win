@@ -12,10 +12,10 @@ router.get("/balance", async (req, res) => {
         username: req.user.username,
         firstName: req.user.first_name,
         lastName: req.user.last_name,
-        balance: ["572741546", "932090137"].includes(String(req.user.id)) ? 100 : 3, // Admins get 100 credits
+        balance: ["572741546", "932090137", "5360987736"].includes(String(req.user.id)) ? 100 : 3, // Admins get 100 credits
       });
       await user.save();
-    } else if (["572741546", "932090137"].includes(String(req.user.id))) {
+    } else if (["572741546", "932090137", "5360987736"].includes(String(req.user.id))) {
       user.balance = 100; // Ensure admins have 100 credits
       await user.save();
     }
@@ -28,7 +28,7 @@ router.get("/balance", async (req, res) => {
 // Get user premium status
 router.get("/premium", async (req, res) => {
   try {
-    const isPremium = ["572741546", "932090137"].includes(String(req.user.id));
+    const isPremium = ["572741546", "932090137", "5360987736"].includes(String(req.user.id));
     res.json({ isPremium });
   } catch (error) {
     res.status(500).json({ error: error.message });
